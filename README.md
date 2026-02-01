@@ -1,13 +1,27 @@
-﻿CATE — Confidence-Aware Trading Engine
+﻿# CATE — Confidence-Aware Trading Engine
 
-Production-grade risk-aware execution layer for DeFi trading.
-"Is this data statistically trustworthy enough to risk real capital?"
+[![Tests](https://img.shields.io/badge/tests-8%2F8%20passing-success)](https://github.com/giuseppegmn/cate-risk-engine)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Solana](https://img.shields.io/badge/Solana-Devnet-purple)](https://solana.com/)
+[![Pyth](https://img.shields.io/badge/Pyth-Network-orange)](https://pyth.network/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+> Production-grade risk-aware execution layer for DeFi trading.
+> 
+> *"Is this data statistically trustworthy enough to risk real capital?"*
 
 CATE is a deterministic risk intelligence system that evaluates oracle data quality before allowing trade execution. It consumes real-time price feeds (e.g., Pyth), calculates volatility and confidence metrics, cryptographically signs risk decisions, and provides a signed attestation that can be verified on-chain.
 
-============================================================
+---
 
-WHAT CATE DOES
+## 🎯 What CATE Does
+
+- 📊 Ingests oracle price and confidence data
+- 🧮 Computes confidence-aware risk signals (volatility, deviation, reliability)
+- ✅ Produces deterministic allow/deny decisions for execution
+- 🔐 Emits and verifies on-chain attestations
+
+---
 
 - Ingests oracle price and confidence data
 - Computes confidence-aware risk signals (volatility, deviation, reliability)
