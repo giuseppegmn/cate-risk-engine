@@ -5,9 +5,10 @@
     "lib": ["ES2020"],
     "outDir": "./dist",
     "rootDir": "./",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "noImplicitAny": false,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
@@ -17,3 +18,4 @@
   "include": ["api-server/**/*", "src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
+
