@@ -1,0 +1,25 @@
+﻿{
+  "version": 2,
+  "name": "cate-risk-engine",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "@cate_api_url",
+    "VITE_PROGRAM_ID": "@cate_program_id",
+    "VITE_SOLANA_RPC": "@cate_solana_rpc",
+    "VITE_SOLANA_NETWORK": "devnet"
+  }
+}
