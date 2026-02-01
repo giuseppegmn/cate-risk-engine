@@ -7,6 +7,7 @@ COPY package*.json ./
 RUN npm ci --only=production --legacy-peer-deps
 
 # Build TypeScript
+COPY tsconfig.json ./
 RUN npx tsc --project tsconfig.json --outDir ./dist
 
 # Copy source
