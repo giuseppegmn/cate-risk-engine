@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CATE - Oracle Layer Types
  * 
  * Production-grade type definitions for Pyth Hermes integration.
@@ -17,7 +17,7 @@ export interface PythPriceFeed {
   price: PythPrice;
   
   /** EMA price data */
-  emaPrice: PythPrice;
+  emaPrice?: PythPrice;
   
   /** VAA (Verified Action Approval) for on-chain verification */
   vaa?: string;
@@ -51,7 +51,7 @@ export interface OraclePrice {
   /** Current price in USD (normalized) */
   price: number;
   
-  /** Confidence interval (±) in USD */
+  /** Confidence interval (Â±) in USD */
   confidence: number;
   
   /** Unix timestamp in milliseconds */
@@ -61,10 +61,10 @@ export interface OraclePrice {
   publishTime: number;
   
   /** Exponential moving average price */
-  emaPrice: number;
+  emaPrice?: number;
   
   /** Exponential moving average confidence */
-  emaConfidence: number;
+  emaConfidence?: number;
   
   /** Raw exponent from Pyth */
   exponent: number;
@@ -228,3 +228,5 @@ export interface FallbackData {
   /** Age of fallback data in seconds */
   ageSeconds: number;
 }
+
+

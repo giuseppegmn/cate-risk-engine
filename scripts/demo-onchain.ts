@@ -1,4 +1,4 @@
-import 'dotenv/config';
+﻿import 'dotenv/config';
 
 import fs from 'fs';
 import os from 'os';
@@ -83,8 +83,8 @@ async function main() {
       confidence: conf,
       timestamp: snapshotNow,
       publishTime: feed.price.publishTime,
-      emaPrice: px,
-      emaConfidence: conf,
+      emaPrice: undefined,  // EMA não disponível na Pyth
+      emaConfidence: undefined,  // EMA não disponível na Pyth
       exponent: -8,
       source: 'PYTH_HERMES' as const,
       sequence: 1,
@@ -191,3 +191,4 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+
