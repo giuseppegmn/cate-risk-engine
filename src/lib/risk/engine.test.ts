@@ -1,4 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock fetch para evitar erros de rede
+global.fetch = vi.fn(() => Promise.resolve({
+  ok: true,
+  json: () => Promise.resolve({ publicKey: 'mock-key', success: true, data: {} })
+})) as any;
 import { RiskEngine, DEFAULT_RISK_PARAMETERS } from './engine';
 import type { OracleSnapshot } from '../oracle/types';
 
@@ -75,3 +81,4 @@ describe('risk/engine', () => {
     expect(d.action).toBe('BLOCK');
   });
 });
+

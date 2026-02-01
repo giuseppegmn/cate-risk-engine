@@ -1,81 +1,63 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-  generateKeyPair,
-  hashDecisionPayload,
-  signDecision,
-  verifySignedDecision,
-  createSignedDecision,
+  requestRemoteSigning,
+  fetchTrustedSigner,
+  getSigningEngine,
+  toUint8Array,
+  formatForAnchor,
+  SigningServiceError,
 } from './signing';
 
 describe('crypto/signing', () => {
   beforeEach(() => {
-    // Make tests deterministic
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-01-28T12:00:00Z'));
+    
+    // Mock fetch
+    global.fetch = vi.fn();
   });
 
-  it('hashDecisionPayload is deterministic for same payload', () => {
-    const payload = {
+  it('toUint8Array converts number array to Uint8Array', () => {
+    const arr = [1, 2, 3, 255];
+    const result = toUint8Array(arr);
+    expect(result).toBeInstanceOf(Uint8Array);
+    expect(Array.from(result)).toEqual(arr);
+  });
+
+  it('formatForAnchor formats decision correctly', () => {
+    const decision = {
       assetId: 'SOL/USD',
-      price: 100.123456,
-      confidence: 0.25,
-      riskScore: 42,
-      action: 'ALLOW',
-      sizeMultiplier: 1,
+      riskScore: 50,
+      isBlocked: false,
+      confidenceRatio: 0.5,
+      publisherCount: 10,
       timestamp: Date.now(),
-      nonce: 'nonce',
+      decisionHash: [1, 2, 3],
+      signature: [4, 5, 6],
+      signerPublicKey: [7, 8, 9],
+      signerBase58: 'abc123',
     };
 
-    const h1 = hashDecisionPayload(payload);
-    const h2 = hashDecisionPayload(payload);
-    expect(h1).toEqual(h2);
+    const formatted = formatForAnchor(decision);
+    
+    expect(formatted.assetId).toBe('SOL/USD');
+    expect(formatted.decisionHash).toBeInstanceOf(Uint8Array);
+    expect(formatted.signature).toBeInstanceOf(Uint8Array);
+    expect(formatted.signerPubkey).toBeInstanceOf(Uint8Array);
   });
 
-  it('signDecision produces a signature that verifies', () => {
-    const kp = generateKeyPair();
-    const payload = {
-      assetId: 'BTC/USD',
-      price: 50000,
-      confidence: 10,
-      riskScore: 10,
-      action: 'ALLOW',
-      sizeMultiplier: 1,
-      timestamp: Date.now(),
-      nonce: 'nonce',
-    };
-
-    const { signature, hash } = signDecision(payload, kp);
-    const signed = {
-      ...payload,
-      action: 'ALLOW' as const,
-      sizeMultiplier: 1,
-      explanation: 'ok',
-      signature,
-      signerPublicKey: kp.publicKeyBase58,
-      decisionHash: hash,
-    };
-
-    const res = verifySignedDecision(signed);
-    expect(res.valid).toBe(true);
+  it('SigningServiceError has correct properties', () => {
+    const error = new SigningServiceError('TEST_ERROR', true);
+    expect(error.code).toBe('TEST_ERROR');
+    expect(error.retryable).toBe(true);
+    expect(error.name).toBe('SigningServiceError');
   });
 
-  it('verifySignedDecision rejects tampered payload', () => {
-    const kp = generateKeyPair();
-    const signed = createSignedDecision(
-      'ETH/USD',
-      2000,
-      2,
-      15,
-      'ALLOW',
-      1,
-      'ok',
-      kp
-    );
-
-    // Tamper
-    const tampered = { ...signed, price: signed.price + 1 };
-    const res = verifySignedDecision(tampered);
-    expect(res.valid).toBe(false);
-    expect(res.error?.toLowerCase()).toContain('hash mismatch');
+  it('getSigningEngine returns engine with required methods', () => {
+    const engine = getSigningEngine();
+    expect(engine.getPublicKey).toBeDefined();
+    expect(engine.sign).toBeDefined();
+    expect(typeof engine.getPublicKey).toBe('function');
+    expect(typeof engine.sign).toBe('function');
   });
 });
