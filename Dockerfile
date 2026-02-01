@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm ci --only=production --legacy-peer-deps
 
 # Build TypeScript
-RUN npx tsc
+RUN npx tsc --project tsconfig.json --outDir ./dist
 
 # Copy source
 COPY api-server/ ./api-server/
