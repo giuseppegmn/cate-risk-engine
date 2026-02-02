@@ -255,10 +255,10 @@ const value = {
     changeAsset,
     startEngine,
     stopEngine,
-    evaluateAndSign
-  },
+    evaluateAndSign,
     publishToChain,
     initializeOnChain
+  }
 
   return (
     <CATEContext.Provider value={value}>
