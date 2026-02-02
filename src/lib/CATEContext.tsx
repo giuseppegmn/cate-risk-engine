@@ -185,37 +185,52 @@ export function CATEProvider({ children }) {
   
   // Publicar decisão na blockchain
   const publishToChain = async (assetId: string): Promise<{success: boolean, txSignature?: string, error?: string}> => {
+    console.log('[DEBUG] publishToChain called with assetId:', assetId);
     try {
-      if (!lastDecision || !lastDecision.signed) {
-        return { success: false, error: 'No signed decision available' }
+      if (!lastDecision) {
+        console.error('[DEBUG] lastDecision is null/undefined');
+        return { success: false, error: 'No decision available' }
+      }
+      
+      if (!lastDecision.signed) {
+        console.error('[DEBUG] lastDecision not signed:', lastDecision);
+        return { success: false, error: 'Decision not signed' }
       }
 
-      // Verifica se onChainTrustService está inicializado
+      console.log('[DEBUG] lastDecision:', lastDecision);
+      console.log('[DEBUG] onChainTrustService.isConnected():', onChainTrustService.isConnected());
+
       if (!onChainTrustService.isConnected()) {
         return { success: false, error: 'Wallet not connected to on-chain service' }
       }
 
-      // Publica a decisão
-      const result = await onChainTrustService.publishDecision(
-        {
-          assetId: assetId,
-          riskScore: lastDecision.score,
-          action: lastDecision.action,
-          confidenceRatio: lastDecision.confidenceRatio || 0,
-          timestamp: Math.floor(Date.now() / 1000),
-          signature: lastDecision.signature!,
-          decisionHash: lastDecision.decisionHash!,
-          signerPublicKey: lastDecision.signerPublicKey!
-        },
-        lastDecision.confidenceRatio || 0,
-        1 // publisherCount
-      )
+      const decisionPayload = {
+        assetId: assetId,
+        riskScore: lastDecision.score,
+        action: lastDecision.action,
+        confidenceRatio: lastDecision.confidenceRatio || 0,
+        timestamp: Math.floor(Date.now() / 1000),
+        signature: lastDecision.signature,
+        decisionHash: lastDecision.decisionHash,
+        signerPublicKey: lastDecision.signerPublicKey
+      };
+      
+      console.log('[DEBUG] decisionPayload:', decisionPayload);
 
-      return result
+      const result = await onChainTrustService.publishDecision(
+        decisionPayload,
+        lastDecision.confidenceRatio || 0,
+        1
+      );
+      
+      console.log('[DEBUG] publishDecision result:', result);
+      return result;
+      
     } catch (error: any) {
-      console.error('[CATE] Publish error:', error)
+      console.error('[DEBUG] Publish error:', error);
       return { success: false, error: error.message || 'Unknown error' }
     }
+  }
   }
 
   // Inicializar on-chain service com wallet
