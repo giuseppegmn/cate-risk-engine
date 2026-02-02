@@ -4,7 +4,7 @@ import * as anchor from '@coral-xyz/anchor';
 import bs58 from 'bs58';
 import idl from '../../idl/workspaceIDL.json';
 
-const PROGRAM_ID = new PublicKey("77kRa7xJb2SQpPC1fdFGj8edzm5MJxhq2j54BxMWtPe6");
+const PROGRAM_ID = new PublicKey("2CVGjnZ2BRebSeDHdo3VZknm5jVjxZmWu9m95M14sTN3");
 const RPC = "https://api.devnet.solana.com ";
 
 export class SolanaPublisher {

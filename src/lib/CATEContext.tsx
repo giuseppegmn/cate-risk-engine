@@ -185,20 +185,14 @@ export function CATEProvider({ children }) {
   
   // Publicar decisão na blockchain
   const publishToChain = async (assetId: string): Promise<{success: boolean, txSignature?: string, error?: string}> => {
-    console.log('[DEBUG] publishToChain called with assetId:', assetId);
     try {
       if (!lastDecision) {
-        console.error('[DEBUG] lastDecision is null/undefined');
         return { success: false, error: 'No decision available' }
       }
       
       if (!lastDecision.signed) {
-        console.error('[DEBUG] lastDecision not signed:', lastDecision);
         return { success: false, error: 'Decision not signed' }
       }
-
-      console.log('[DEBUG] lastDecision:', lastDecision);
-      console.log('[DEBUG] onChainTrustService.isConnected():', onChainTrustService.isConnected());
 
       if (!onChainTrustService.isConnected()) {
         return { success: false, error: 'Wallet not connected to on-chain service' }
@@ -214,23 +208,18 @@ export function CATEProvider({ children }) {
         decisionHash: lastDecision.decisionHash,
         signerPublicKey: lastDecision.signerPublicKey
       };
-      
-      console.log('[DEBUG] decisionPayload:', decisionPayload);
 
       const result = await onChainTrustService.publishDecision(
         decisionPayload,
         lastDecision.confidenceRatio || 0,
         1
       );
-      
-      console.log('[DEBUG] publishDecision result:', result);
+
       return result;
-      
     } catch (error: any) {
-      console.error('[DEBUG] Publish error:', error);
+      console.error('[CATE] Publish error:', error);
       return { success: false, error: error.message || 'Unknown error' }
     }
-  }
   }
 
   // Inicializar on-chain service com wallet
