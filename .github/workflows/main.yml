@@ -25,5 +25,5 @@ jobs:
     - name: Run tests
       run: npm run test
       
-    - name: TypeScript check
-      run: npx tsc --noEmit
+    - name: Build frontend
+      run: npm run build
