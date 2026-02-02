@@ -16,6 +16,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy for Railway
+app.set('trust proxy', 1);
+
 // =============================================================================
 // SECURITY MIDDLEWARE
 // =============================================================================
@@ -337,3 +340,4 @@ process.on('SIGINT', () => {
   console.log('[API] SIGINT received, shutting down gracefully');
   process.exit(0);
 });
+
