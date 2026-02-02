@@ -1,0 +1,18 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    "include": ["api-server/**/*", "src/**/*"],},
+    {
+      "path": "./tsconfig.node.json"
+    "include": ["api-server/**/*", "src/**/*"],}
+  ],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@": ["."]
+    "include": ["api-server/**/*", "src/**/*"],}
+  "include": ["api-server/**/*", "src/**/*"],}
+"include": ["api-server/**/*", "src/**/*"],}
