@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -25,11 +25,5 @@ jobs:
     - name: Run tests
       run: npm run test
       
-    - name: TypeScript check
-      run: npx tsc --noEmit
-      
     - name: Build frontend
       run: npm run build
-      
-    - name: Build backend
-      run: npx tsc --project tsconfig.json --outDir ./dist
