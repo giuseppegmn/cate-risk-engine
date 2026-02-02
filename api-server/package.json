@@ -1,8 +1,8 @@
-{
+﻿{
   "name": "cate-signing-api",
   "version": "1.0.0",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon index.ts"
   },
@@ -13,14 +13,13 @@
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.0",
     "helmet": "^7.1.0",
-    "tweetnacl": "^1.0.3"
-  },
-  "devDependencies": {
+    "tweetnacl": "^1.0.3",
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
     "@types/node": "^20.8.0",
-    "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
