@@ -67,7 +67,7 @@ export function MetricsPanel() {
   const { metrics, oracleConnected, avgRiskScore, blockRate, uptimeSeconds } = useSystemMetrics();
   
   // Calculate metrics
-  const totalDecisions = (decisions?.size ?? 0);
+  const totalDecisions = decisions.size;
   const allowCount = Array.from(decisions.values()).filter(d => d.action === 'ALLOW').length;
   const scaleCount = Array.from(decisions.values()).filter(d => d.action === 'SCALE').length;
   const blockCount = Array.from(decisions.values()).filter(d => d.action === 'BLOCK').length;
