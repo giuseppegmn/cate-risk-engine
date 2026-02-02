@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { requestRemoteSigning } from './crypto/signing'
 import { riskEngine } from './riskIntelligence'
+import { onChainTrustService } from './chain/onChainTrust'
 import { pythOracle, AssetSymbol } from './oracleReal'
 
 const CATEContext = createContext(null)
@@ -181,7 +182,55 @@ export function CATEProvider({ children }) {
     }
   }, [selectedAsset])
 
-  const value = {
+  
+  // Publicar decisão na blockchain
+  const publishToChain = async (assetId: string): Promise<{success: boolean, txSignature?: string, error?: string}> => {
+    try {
+      if (!lastDecision || !lastDecision.signed) {
+        return { success: false, error: 'No signed decision available' }
+      }
+
+      // Verifica se onChainTrustService está inicializado
+      if (!onChainTrustService.isConnected()) {
+        return { success: false, error: 'Wallet not connected to on-chain service' }
+      }
+
+      // Publica a decisão
+      const result = await onChainTrustService.publishDecision(
+        {
+          assetId: assetId,
+          riskScore: lastDecision.score,
+          action: lastDecision.action,
+          confidenceRatio: lastDecision.confidenceRatio || 0,
+          timestamp: Math.floor(Date.now() / 1000),
+          signature: lastDecision.signature!,
+          decisionHash: lastDecision.decisionHash!,
+          signerPublicKey: lastDecision.signerPublicKey!
+        },
+        lastDecision.confidenceRatio || 0,
+        1 // publisherCount
+      )
+
+      return result
+    } catch (error: any) {
+      console.error('[CATE] Publish error:', error)
+      return { success: false, error: error.message || 'Unknown error' }
+    }
+  }
+
+  // Inicializar on-chain service com wallet
+  const initializeOnChain = async (wallet: any): Promise<boolean> => {
+    try {
+      if (!wallet || !wallet.publicKey) return false
+      onChainTrustService.initializeWithWallet(wallet)
+      return true
+    } catch (error) {
+      console.error('[CATE] Initialize on-chain error:', error)
+      return false
+    }
+  }
+
+const value = {
     isRunning,
     isLoading,
     lastUpdate,
@@ -192,7 +241,9 @@ export function CATEProvider({ children }) {
     startEngine,
     stopEngine,
     evaluateAndSign
-  }
+  },
+    publishToChain,
+    initializeOnChain
 
   return (
     <CATEContext.Provider value={value}>

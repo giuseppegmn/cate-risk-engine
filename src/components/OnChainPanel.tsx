@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useCATE, useSelectedAsset } from '@/lib/CATEContext';
+import { useCATE } from '@/lib/CATEContext';
 import { onChainTrustService, PROGRAM_ID } from '@/lib/chain/onChainTrust';
 
 export function OnChainPanel() {
@@ -26,7 +26,7 @@ export function OnChainPanel() {
     initializeOnChain, 
     publishToChain 
   } = useCATE();
-  const { assetId, decision } = useSelectedAsset();
+  const { selectedAsset: assetId, lastDecision: decision } = useCATE();
   
   const [onChainStatus, setOnChainStatus] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +70,14 @@ export function OnChainPanel() {
     setError(null);
     
     const result = await publishToChain(assetId);
+        console.log("DEBUG publishToChain result:", result);
+        
+        // Correção: verificar se result existe
+        if (!result) {
+          setError("Failed to publish: No response from chain");
+          setPublishing(false);
+          return;
+        }
     
     if (result.success) {
       setLastTx(result.txSignature || null);
